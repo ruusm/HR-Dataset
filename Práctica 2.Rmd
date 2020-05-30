@@ -1,0 +1,436 @@
+---
+title: "Práctica 2"
+author: "Rubén Silva Marín"
+date: "30/5/2020"
+output: 
+  html_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### 1. DESCRIPCIÓN DEL DATASET
+
+```{r}
+library('ggplot2')
+setwd('G:\\Mi unidad\\UOC\\Data Science\\2\\Tipología y Ciclo de Vida de los Datos\\Práctica 2\\1632_774340_bundle_archive')
+data <- read.csv('HRDataset_v13.csv')
+```
+
+El dataset contiene información (ficticia) de empleados de una empresa. Los datos son tanto demográficos como laborales. Así, es posible encontrar los siguientes campos:
+
+- Nombre: Indica el nombre de la persona (es ficticio)
+- ID: el identificador de la persona (único)
+- MarriedID: si la persona está casada (1) o no (0)
+- MaritalStatusID: indica el codigo del estado civil de la persona: soltero (0), casado (1), divorciado (2), separado (3) o viudo (4)
+- GenderID: indica el sexo de la persona: femenino (0) o masculino (1)
+- EmpStatusID: indica el código del estado de empleo de la persona: activo (1), proxima contratación (2), excedencia (3), despedido por alguna causa (4) o baja voluntaria (5)
+- DeptID: número de identificación del dpto.: oficinas administrativas (1), oficina ejecutiva (2), departamento de informática (3), desarrollo de software (4), producción (5) y ventas (6)
+- PerfScoreID: número de identificación de la calificación de desempeño: necesita un plan de mejora (1), necesita mejorar (2), cumple objetivos (3), excede objetivos (4)
+- FromDiversityJobFairID: indica si el empleado fue reclutado a través de alguna feria de empleo de diversidad: si (1) o no (0)
+- PayRate: el salario por hora de la persona
+- Termd: indica si el empleado ha sido despedido o no: si (1) o no (0)
+- PositionID: indica el código del puesto de trabajo de la persona: contable (1), asistente administrativo (2), coordinador de zona de venta (3), desarrollador Business Intelligence (4), director de Business Intelligence (5), director ejecutivo de información (6), arquitecto de datos (7), administrador de bases de datos (8), analista de datos (9), director de operaciones (10), director de ventas (11), director de informática (12), manager de IT (13), soporte de IT (14), ingeniero de redes (15), CEO (16), manager de producción (17), técnico de producción I (18), técnico de producción II (19), jefe de ventas (20), desarrollador de business intelligence senior (21), manager de servicios compartidos (22), ingeniero de software (23), manager de ingenieros de software (24), contable senior (25), administrador de bases de datos senior (26), ingeniero de redes senior (27), arquitecto de datos principal (28) y arquitecto empresarial (29)
+- Position: indica el nombre de la posición
+- State: indica el estado en el que vive la persona
+- Zip: indica el código postal de la ciudad en la que vive la persona
+- DOB: indica la fecha de nacimiento de la persona
+- Sex: indica el sexo de la persona: F para mujer y M para hombre
+- MaritalDesc: indica el estado civil de la persona: solterx, casadx, separadx, divorciadx o viudx
+- CitizenDesc: indica si la persona es ciudadana de los estados unidos: ciudadano o ciudadano extranjero
+- HispanicLatino: si la persona es (1) o no (0) latina
+- RaceDesc: raza de la persona: negro o afroamericano, blanco, asiático, nativo americano, hispano o mestizo de varias razas
+- DateofHire: fecha de contratación
+- DateofTermination: fecha de salida de la compañía
+- TermReason: motivo de la salida: aún trabajando, cambio de carrera, cambio de posición, ausencias, reubicación fuera del área, no ha empezado aún, desempeño, no se presenta, horas, motivos médicos, jubilación, insatisfacción, mejor salario, vuelve a formación, conducta inapropiada, servicio militar o no vuelve de la baja por maternidad
+- EmploymentStatus: indica el estado laboral de la persona: activo, despedido por alguna causa, baja voluntaria, próximo inicio o excedencia
+- Departament: indica el nombre del departamento al que pertenece (anteriormente mencionados)
+- ManagerName: indica el nombre del manager del departamento al que pertenece
+- ManagerID: indica el identificador del manager
+- RecruitmentSource: indica la fuente de reclutamiento utilizado para seleccionar al empleado: feria de empleo de diversidad, anuncios en página web, búsqueda por internet, campañas de pago de google, red social de la empresa, valla publicitaria, a través de la página de monster.com, periódico/revista, círculos profesionales/networking, referencia de empleado interno, página web Indeed, capañas de SEO, página web Glassdoor, referencia de proveedor externo, anuncios de MBTA, sesión informativa, boca a boca, campañas de pago, reclutamiento in-situ (campus), página web de la empresa, página web Careerbuilder o partners de la compañía
+- PerformanceScore: indica el desempeño del empleado (anteriormente mencionado)
+- EngagementSurvey: indica la puntuación sobre el nivel de compromiso de un empleado con la empresa
+- EmpSatisfaction: indica la satisfacción del empleado del 1 (poca) al 5 (mucha)
+- SpecialProjectsCount: indica el número de proyectos especiales en los que el trabajador ha participado en los últimos 6 meses
+- LastPerformanceReview_Date: la fecha más reciente en la que el empleado ha tenido una revisión del desempeño
+- DaysLateLast30: el número de veces en las que el empleado ha llegado tarde en los últimos 30 días
+
+#### 1.2. Importancia y objetivos de los análisis
+
+Este dataset es muy interesante para poder realizar distintos análisis que vayan en busca de confirmar que la empresa tiene implantada o no una política de igualdad en cuanto a la evaluación del desempeño, la participación en proyectos especiales o el salario. En la época en la que estamos es muy importante tener fuertes políticas para evitar sesgos a la hora de la revisión del desempeño, de igualdad de oportunidades y de revisión salarial. Este análisis es posible hacerse a través del análisis de la varianza comparando distintas varibles como el salario, la igualdad de oportunidad en proyectos importantes o la puntuación en desempeño en función del sexo y la raza.
+
+Una vez descartadas los sesgos negativos hacia la diversidad (con suerte) se podría construir un modelo de regresión lineal del salario por hora en función de la participación en proyectos importantes, el compromiso del empleado con la empresa, su satisfacción, el departamento y/o la puntuación en el desempeño.
+
+### 2. INTEGRACIÓN Y SELECCIÓN DE LOS DATOS DE INTERÉS A ANALIZAR
+
+Para llevar a cabo los análisis se tendrá que mantener aquellos datos que formarán parte del mismo. En este caso, se utilizarán las siguientes variables: 
+- Sexo | Sex, GenderID
+- Raza | HispanicLatino, RaceDesc
+- Desempeño | PerfScoreID, PerformanceScore
+- Participación en proyectos importantes | SpecialProjectsCount
+- Salario | PayRate
+- Compromiso del empleado | EngagementSurvey
+- Satisfacción con el trabajo | EmpSatisfaction
+- Departamento | DeptID, Department
+- Fuentes de reclutamiento enfocadas en diversidad | FromDiversityJobFairID
+
+Para poder seleccionarlas se volcarán en otra variable, dejando el origen intacto por si se necesita más adelante.
+
+```{r}
+origen <- data
+data <- data[, c('Sex', 'GenderID', 'HispanicLatino', 'RaceDesc', 'PerfScoreID', 'PerformanceScore', 'SpecialProjectsCount', 'PayRate', 'EngagementSurvey', 'EmpSatisfaction', 'DeptID', 'Department', 'FromDiversityJobFairID')]
+```
+
+Ahora se puede trabajar con el conjunto de variables seleccionado.
+
+
+### 3. LIMPIEZA DE DATOS
+
+#### 3.1. ¿Los datos contienen ceros o elementos vacíos? ¿Cómo gestionarías cada uno de estos casos?
+
+Se van a analizar los datos para descubrir si tienen valores perdidos. Es posible comenzar con los valores 'NA' para ver si hay pérdidas en los datos.
+
+```{r}
+colSums(is.na(data))
+```
+
+Como se puede observar, hay una pérdida sistemática de 91 datos en la mayoría de las variables. Por otro lado, 3 de 5 variables que no presentan datos pérdidos son numéricas. Es posible que también hayan 91 datos perdidos en estas variables que a priori no parece tener pérdidas, porque al contener el 0 como posible valor no se tienen en cuenta como perdidos.
+
+```{r}
+head(data[is.na(data$GenderID),], 20)
+tail(data[is.na(data$GenderID),], 20)
+```
+
+Como se observa, los valores perdidos en una de las variables que los presentaba van acompañados de valores perdidos en las otras variables. Además, se observa también que las variables que no presentaban a priori estos valores perdidos tienen valores vacíos, los cuales no tienen por qué corresponder con valores 'NA', dando negativo en el test de valores 'NA'. 
+
+```{r}
+colSums(data == '', na.rm = TRUE)
+```
+
+Se observa claramente que los 91 valores que anteriormente se observaban como perdidos se corresponden con valores vacíos en las variables que no presentaban esos 91 valores perdidos.
+
+Se va a proceder a comprobar por último si existen otros valores posibles valores perdidos representados de alguna otra forma.
+
+```{r}
+colSums(data == '?', na.rm = TRUE)
+colSums(data == '999', na.rm = TRUE)
+colSums(data == ' ', na.rm = TRUE)
+colSums(data == '-', na.rm = TRUE)
+colSums(data == 0, na.rm = TRUE)
+```
+
+Como se puede observar, en el último caso, se comparan las variables con el posible valor perdido 0. Solo muestran 0 variables que lo incluyen en sus dominios como parte de un valor posible. Por ejemplo: la variable SpecialProjectsCount puede tomar el valor 0 y no sería un error o valor perdido.
+
+En este caso, se ve claramente que los registros con valores perdidos deben ser eliminados porque no aportan ninguna información valiosa. Si se mantuviesen podrían suponer un problema y habría que imputar valores en todas las variables posibles, lo cual conlleva mucho esfuerzo para nada (los registros resultantes serían estimados en todas las variables).
+
+```{r}
+data <- data[is.na(data$GenderID) == FALSE,]
+colSums(is.na(data))
+```
+
+Ahora se observa que no hay valores perdidos en los datos.
+
+Antes de continuar hacia el estudio de los valores extremos se va a comprobar si existen problemas en los datos como errores de formato o similares
+
+```{r}
+str(data)
+```
+
+Aquí se pueden observar varios aspectos:
+
+- Es posible que haya errores en la variable sexo, ya que posee 3 niveles y el nivel M tiene un espacio después del carácter
+- La variable HispanicLatino tiene errores claramente, ya que es una variable dicotómica y tiene 5 niveles
+- Se comprobarán el resto de variables cualitativas por si hay más errores
+
+_Sexo_
+
+```{r}
+levels(data$Sex)
+```
+
+El tercer nivel observado anteriormente se eliminó con la limpieza de los valores perdidos. Posiblemente se haya quedado la configuración, aunque no haya valores erróneos. Se recodificará la variable para evitar errores.
+
+```{r}
+data$Sex <- factor(data$Sex, levels = c('F', 'M '), labels = c('F', 'M'))
+levels(data$Sex)
+```
+
+Se han corregido los errores para que solo muestre los 2 valores posibles.
+
+_HispanicLatino_
+
+```{r}
+levels(data$HispanicLatino)
+```
+
+Se observan 5 niveles que claramente no corresponden con los que debería tener. Uno vacío que se quedó aún después de eliminar los valores vacíos, y otros 4 valores que se repiten: 2 para sí y 2 para no.
+
+```{r}
+data$HispanicLatino <- factor(data$HispanicLatino, levels = c('no', 'No', 'yes', 'Yes'), labels = c('No', 'No', 'Yes', 'Yes'))
+levels(data$HispanicLatino)
+```
+
+Se han corregido los errores para que solo muestre los 2 valores posibles.
+
+_RaceDesk_
+
+```{r}
+levels(data$RaceDesc)
+```
+
+Se observa un nivel vacío que se arrastra de cuando habían valores de este tipo. Se corregirá el factor para que solo contenga los niveles correctos.
+
+```{r}
+nivelesCorrectos <- levels(data$RaceDesc)[-1]
+data$RaceDesc <- factor(data$RaceDesc, levels = nivelesCorrectos)
+levels(data$RaceDesc)
+```
+
+Ahora ya está corregido el factor.
+
+_PerformanceScore_
+
+```{r}
+levels(data$PerformanceScore)
+```
+
+Tiene el mismo problema que las anteriores, arrastra el nivel vacío.
+
+```{r}
+nivelesCorrectos <- levels(data$PerformanceScore)[-1]
+data$PerformanceScore <- factor(data$PerformanceScore, levels = nivelesCorrectos)
+levels(data$PerformanceScore)
+```
+
+Ya se ha corregido. Se eliminará la variable 'NivelesCorrectos' porque no tiene más utilidad.
+
+```{r}
+rm(nivelesCorrectos)
+```
+
+_Department_
+
+```{r}
+levels(data$Department)
+```
+
+Esta variable, además de presentar el nivel vacío, tiene un nivel mal escrito: Production, porque tiene varios espacios/tabulaciones al final de la palabra. Se corregirá para evitar problemas con los análisis.
+
+```{r}
+data$Department <- factor(data$Department, levels = levels(data$Department)[-1], labels = c('Admin Offices', 'Executive office', 'IT/IS', 'Production', 'Sales', 'Software engineering'))
+levels(data$Department)
+```
+
+Ahora se observa que los niveles están corregidos.
+
+#### 3.2. Identificación y tratamiento de valores extremos
+
+```{r}
+summary(data[,sapply(data, is.numeric)])
+```
+
+Es posible observar distintas características:
+- la variable con mayor media es el salario, lo cual tiene sentido, dado que con respecto a las otras, su dominio es mayor 
+- la variable PerfScoreID tiene una distribución centrada en torno al 3, que es más que la mitad, por lo que está desplazada hacia la derecha (valores superiores) 
+- la variable SpecialProjectsCount está centrada en 1, aunque su valor máximo es 8, lo cual se podría prever que está bastante desplazada hacia la izquierda (valores inferiores)
+- la variable salario está centrada en 31, que es menos que la mitad del valor máximo, lo que podría esperarse que estuviera un poco desplazada hacia la izquierda
+- la variable EngagementSurvey tiene valores desde el 1 hasta el 5 (típicos de la escala Likert), con una media de 3 y un tercio, por lo que podría preverse que existe un compromiso normal (o un poco más elevado de lo normal)
+- la variable EmpSatisfaction también tiene valores desde el 1 hasta el 5 y con una media de casi 4, con lo que se observa una satisfacción bastante elevada por lo general
+- las variables GenderID, DeptID y FromDiversityJobFairID no tienen sentido numérico, solo contienen valores numéricos con significado categórico
+
+Se explorará la distribución de las variables numéricas:
+
+_PerfScoreID_
+
+Es una variable numérica discreta, con lo que se representará de la siguiente manera:
+
+```{r}
+ggplot(data, aes(PerfScoreID)) + geom_bar(fill = 'steelblue2') + labs(title = 'Evaluación del Desempeño', x = 'Puntuación', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5))
+```
+
+Se observa claramente una tendencia a puntuar con un 3 cuando se mide el desempeño. Este sería el rendimiento esperado de los trabajadores por parte de la empresa.
+
+No se observa ningún valor extremo en este sentido.
+
+_SpecialProjectsCount_
+
+```{r}
+ggplot(data, aes(SpecialProjectsCount)) + geom_bar(fill = 'steelblue2') + labs(title = 'Participación en Proyectos Especiales', x = 'Cantidad de proyectos en los que se participa', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5))
+```
+
+La distribución es asimétrica y parece tener sentido. La mayoría de los empleados no participan en un proyecto especial. Teniendo en cuenta que para ser especiales deberían ser limitados (no todos serán especiales) tiene sentido que no toda la plantilla participe. También se observa que es más probable que participe en varios proyectos que solo en uno.
+
+Se observa que hay algunos empleados que participan hasta en 8 proyectos (valor máximo) pero no parece ser un valor extremo sin sentido, dado que hay varios empleados que participan en 8 proyectos y también hay muchos que participan en 7. No parece ser un error ni un valor que no se tenga que tener en cuenta.
+
+_PayRate_
+
+```{r}
+ggplot(data, aes(PayRate)) + geom_histogram(fill = 'steelblue2') + labs(title = 'Distribución del Salario', x = 'Salario', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5)) + geom_segment(x = 79.5, xend = 79.5, y = 10, yend = 4, col ='red', arrow = arrow(angle = 25,ends = 'last', length = unit(0.15, 'cm')), size = 1) + annotate('text', x = 75, y = 11.5, label = 'Posible Valor Extremo', fontface = 'bold')
+```
+
+La distribución es asimétrica y no tiende a la normal. Hay muy pocas personas que cobren entre 30 y 55$/hora, mientras que hay muchos que cobran menos y también hay otro pico en torno a 55. Se observa un valor extremo situado en 80. Para poder estudiar si se debe mantener o no se comprobará si pertenece al CEO. En caso de que pertenezca, sería ideal eliminar esta figura del conjunto de datos porque es una figura especial que normalmente tiene otras condiciones laborales y situación distinta. Podría sesgar los análisis.
+
+```{r}
+ggplot(data, aes(x = '', y = PayRate)) + geom_boxplot(fill = 'steelblue2') + labs(title = 'Distribución del Salario', x = 'Salario', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5))
+```
+
+No parece que en este caso el salario observado anteriormente sea un valor extremo. Sin embargo, tal y como se comentó anteriormente, las condiciones especiales del CEO se deberían considerar como distintas a las del resto de los empleados. Es por eso que se eliminará para no sesgar los análisis.
+
+
+```{r}
+origen[data$PayRate == 80,'Position']
+```
+
+Se ve claramente que al ser la presidenta/CEO tiene mejores condiciones que el resto de empleados.
+
+```{r}
+data <- data[data$PayRate != 80,]
+ggplot(data, aes(PayRate)) + geom_histogram(fill = 'steelblue2') + labs(title = 'Distribución del Salario', x = 'Salario', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5)) + geom_segment(x = 79.5, xend = 79.5, y = 10, yend = 4, col ='red', arrow = arrow(angle = 25,ends = 'last', length = unit(0.15, 'cm')))
+
+ggplot(data, aes(x = '', y = PayRate)) + geom_boxplot(fill = 'steelblue2') + labs(title = 'Distribución del Salario', x = 'Salario', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5))
+```
+
+Se observa que ya no hay valores extremos.
+
+_EngagementSurvey_
+
+```{r}
+ggplot(data, aes(EngagementSurvey)) + geom_histogram(fill = 'steelblue2') + labs(title = 'Compromiso con la Empresa', x = 'Nivel de compromiso', y = 'Frecuencia') + theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data, aes(x = '', y = EngagementSurvey)) + geom_boxplot(fill = 'steelblue2')
+```
+
+Como se puede ver, hay mucho empleados que están muy satisfechos con la empresa (muchos valores máximos). Aunque el resto de empleados se reparten más o menos de manera igual en el resto de valores de satisfacción. No se observan valores extremos en este caso.
+
+
+### 4. ANÁLISIS
+
+#### 4.1. Selección de los grupos de datos que se quieren analizar/comparar (planificación de los análisis a aplicar)
+
+Para llevar a cabo los análisis es necesario determinar qué tipo de pruebas se realizarán: 
+
+- Para comparar los salarios en función del sexo y la raza se podría realizar un análisis de la varianza. Por ejemplo, un ANOVA o un test no paramétrico de Kruskal-Wallis.
+
+- Para comparar la tanto la participación en proyectos especiales como la evaluación del desempeño en función del sexo o la raza se tendría que utilizar otro tipo de test dado que las variables dependientes es discreta. En este caso se utilizaría un test chi-cuadrado.
+
+- Para el modelo de regresión se utilizará el método de los mínimos cuadrado y así intentar predecir el salario por hora en función de la participación en proyectos importantes, el compromiso del empleado con la empresa, su satisfacción, el departamento y/o la puntuación en el desempeño.
+
+#### 4.2. Comprobación de la normalidad y homogeneidad de la varianza.
+
+Como se han propuesto varios tipos de pruebas para el análisis del salario en función del sexo y la raza, es necesario analizar si la variable salario se ajusta a una distribución normal o no. Con esto se sabrá si se debe aplicar un test paramétrico o no paramétrico.
+
+_Salarios_
+
+```{r}
+shapiro.test(data$PayRate)
+```
+
+Se observa claramente que el salario no sigue una distribución normal. Lo que se sospechaba tras evaluar el histograma anterior.
+
+Dado que no se puede aplicar el análisis de la varianza ANOVA, habrá que comprobar que las distribuciones del salario en función del sexo y la raza tienen las mismas varianzas. De esta forma al menos se podrá aplicar el test de Kruskal-Wallis.
+
+```{r}
+library(car)
+leveneTest(PayRate ~ Sex, data = data, center = 'median')
+```
+
+En este caso no se puede aplicar el análisis de la varianza no paramétrico *Kruskal-Wallis*, porque las varianzas no son iguales en los grupos de comparación.
+
+Se comprobará si al menos se puede aplicar para comprobar el salario en función de la raza.
+
+```{r}
+leveneTest(PayRate ~ RaceDesc, data = data, center = 'median')
+```
+
+En este caso el test de Levene sí indica que tienen la misma varianza por lo que se podría aplicar un test no paramétrico como el de Kruskal-Wallis.
+
+#### 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos.
+
+*_Salario en función de la Raza_*
+
+Hipótesis:
+
+$H_0:$ No existen diferencias significativas del salario en función de la raza
+$H_1:$ Si existen diferencias significativas del salario en función de la raza
+
+Nivel de confianza: $\alpha = 0.05$
+
+```{r}
+kruskal.test(data = data, PayRate ~ RaceDesc)
+```
+
+Como se observa, la probabilidad es mayor a la establecida por el nivel de confianza ($\alpha = 0.05$) por lo que no se rechaza la hipótesis nula y se considera que no hay diferencias significativas en cuanto al salario en función de la raza. Una buena noticia dado que se están estudiando las políticas de igualdad.
+
+_Participación en proyectos especiales en función del Sexo y la Raza_
+
+Antes de proceder a realizar la prueba de chi cuadrado se van a observar las distintas frecuencias observadas, para evitar que alguna sea demasiado pequeña.
+
+```{r}
+table(data$SpecialProjectsCount, data$Sex)
+```
+
+Como se puede ver, hay algunas celdas que son muy pequeñas como por ejemplo, los hombres que participane en 3 proyectos. De esta forma, se agruparán para evitar este problema. Se harán intervalos con 0 proyectos, de 1 a 5 y de 6 a 8.
+
+```{r}
+data[data$SpecialProjectsCount==0,'SpecialProjectsDisc'] <- 'No participa'
+data[data$SpecialProjectsCount >= 1 & data$SpecialProjectsCount <= 5,'SpecialProjectsDisc'] <- 'Participa en algunos'
+data[data$SpecialProjectsCount>5,'SpecialProjectsDisc'] <- 'Participa en muchos'
+
+table(data$SpecialProjectsDisc, data$Sex)
+```
+
+Ahora si hay más cantidad en donde comprarar.
+
+Hipótesis:
+
+$H_0:$ La participación en proyectos especiales es independiente del sexo
+$H_1:$ La participación en proyectos especiales si depende del sexo
+
+```{r}
+chisq.test(data$SpecialProjectsDisc, data$Sex)
+```
+
+Como se observa, no existen diferencias significativas en las distribuciones de la variable participación en proyectos especiales en función del Sexo, lo que indica que no están relacionadas.
+
+```{r}
+table(data$SpecialProjectsCount, data$RaceDesc)
+```
+
+Como se observa, hay muy pocos empleados de algunas razas, por lo que se va a comparar blancos vs resto para ver si hay diferencias.
+
+```{r}
+data[data$RaceDesc == 'White', 'RaceDescDisc'] <- 'White'
+data[data$RaceDesc != 'White', 'RaceDescDisc'] <- 'No-White'
+head(data[,c('RaceDesc', 'RaceDescDisc')])
+table(data$SpecialProjectsDisc, data$RaceDescDisc)
+```
+
+Además se considerará la misma clasificación de participación que en el sexo: no participación, participación y participación alta o en muchos proyectos.
+
+Hipótesis:
+
+$H_0:$ La participación en proyectos especiales es independiente de ser blanco
+$H_1:$ La participación en proyectos especiales si depende de ser blanco
+
+```{r}
+chisq.test(data$SpecialProjectsDisc, data$RaceDescDisc)
+```
+
+Como se observa en este caso tampoco hay discriminacion en función de si la persona es blanca o no. Dado que no depende serlo para tener mayor participación en proyectos especiales.
+
+
+_Modelo de Regresión Lineal para el salario_
+
+Como no se ha podido comprobar que el sexo esté relacionado con el salario, se va a incluir en el modelo de regresión lineal y ver si aporta algo a la predicción.
+
+Se construirá un modelo de regresión lineal del salario en función de: el sexo, la participación en proyectos importantes, el compromiso del empleado con la empresa, su satisfacción, el departamento y/o la puntuación en el desempeño.
+
+```{r}
+summary(lm(PayRate ~ Sex + SpecialProjectsCount + EngagementSurvey + EmpSatisfaction + Department + PerformanceScore, data = data))
+```
+
+Como se observa, solamente el departamento muestra un aporte significativo al modelo. Se considera positivo que el sexo no tenga efecto en el salario, pero es negativo no contar con la evaluación del desempeño para el salario.
+
+Se observa que el modelo explica el 65% de la varianza del salario, por lo que no es un modelo demasiado potente.
