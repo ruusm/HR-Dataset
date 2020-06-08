@@ -1,7 +1,8 @@
 # HR-Dataset
-This repository contains the R notebook of the analysis realized on an HR Dataset. The objectives were:
 
-- to explore the relationship between the sex and other variables like salary and special projects participation
-- to explore the relationship between the race and other variables like salary and special projects participation
-- to build a lineal regression model to predict salary rate based on variables like sex, employees satisfaction, 
-  engagement and performance, and special projects participation
+Este repositorio está creado por Rubén Silva Marin y contiene los siguientes archivos: 
+- Código.Rmd: es el código de R en formato R Markdown para generar el html final
+- Práctica2.html: contiene todas las respuestas a las preguntas, así como el código en R y los resultados de cada comando, como gráficos, datos, etc. en formato HTML.
+- Práctica2.pdf: contiene todas las respuestas a las preguntas, así como el código en R y los resultados de cada comando, como gráficos, datos, etc. en formato PDF.
+- Datos_Originales.csv: contiene los datos que se han utilizado para los análisis antes de haberse realizado las modificaciones.
+- Datos_Transformados.csv: contiene los datos que se han utilizado para los análisis una vez que se han realizado las modificaciones.
