@@ -6,3 +6,4 @@ Este repositorio está creado por Rubén Silva Marin y contiene los siguientes a
 - Práctica2.pdf: contiene todas las respuestas a las preguntas, así como el código en R y los resultados de cada comando, como gráficos, datos, etc. en formato PDF.
 - Datos_Originales.csv: contiene los datos que se han utilizado para los análisis antes de haberse realizado las modificaciones.
 - Datos_Transformados.csv: contiene los datos que se han utilizado para los análisis una vez que se han realizado las modificaciones.
+- Práctica 2.zip: contiene todos los archivos anteriores en una carpeta comprimida para facilitar la descarga.
